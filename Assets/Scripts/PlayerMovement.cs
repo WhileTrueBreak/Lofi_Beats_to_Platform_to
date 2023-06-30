@@ -126,10 +126,13 @@ public class PlayerMovement : MonoBehaviour {
         var pos = playerBounds.center+transform.position;
         var endPos = pos + moveStep;
         var hasCollision = Physics2D.OverlapBox(endPos, playerBounds.size, 0, ground);
+        //if no collision just move
         if(hasCollision == null){
             transform.position += moveStep;
             return;
         }
+        
+        //use binary search to find the farthest point without collision
         var lastValid = 0f;
         var currentPercentage = 0.5f;
         var nextStep = 0.25f;
@@ -143,7 +146,6 @@ public class PlayerMovement : MonoBehaviour {
             }
             nextStep /= 2;
         }
-        moveStep.Normalize();
         transform.position += moveStep*currentPercentage;
     }
     
