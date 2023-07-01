@@ -248,7 +248,7 @@ MonoBehaviour:
   wallJumpBufferTime: 0.2
   jumpBufferTime: 0.2
   coyoteBufferTime: 0.1
-  gravity: -60
+  gravity: -120
   playerBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0.5, y: 0.5, z: 0}
@@ -257,15 +257,15 @@ MonoBehaviour:
     m_Bits: 64
   collidedCheckRange: 0.05
   rayCount: 5
-  maxHorizontalSpeed: 8
+  maxHorizontalSpeed: 10
   groundedHorizontalAccelTime: 0.1
   groundedHorizontalDecelTime: 0.15
   aerialHorizontalAccelTime: 0.1
   aerialHorizontalDecelTime: 0.15
-  maxFallSpeed: 20
-  jumpForce: 20
-  apexRange: 5
-  apexGravity: -20
+  maxFallSpeed: 30
+  jumpForce: 35
+  apexRange: 10
+  apexGravity: -30
 --- !u!212 &1112889299
 SpriteRenderer:
   m_ObjectHideFlags: 0

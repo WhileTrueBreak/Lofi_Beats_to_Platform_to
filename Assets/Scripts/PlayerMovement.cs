@@ -46,8 +46,8 @@ public class PlayerMovement : MonoBehaviour {
     private bool inputRight = false;
     private bool inputJump = false;
     private bool inputDash = false;
-    private float lastJumpInput = 0f;
-    private float lastDashInput = 0f;
+    private float lastJumpInput = -1f;
+    private float lastDashInput = -1f;
     
     void getInputs(){
         // get key input
@@ -175,7 +175,7 @@ public class PlayerMovement : MonoBehaviour {
         calcJumpHangtime();
         if(Time.time-lastJumpInput > jumpBufferTime && !inputJump) return;
         if(!(isGrounded || (Time.time-lastGrounded < coyoteBufferTime)&&allowCoyote)) return;
-        
+        lastJumpInput = -1;
         allowCoyote = false;
         isJumping = true;
         vel.y = jumpForce;
@@ -216,8 +216,8 @@ public class PlayerMovement : MonoBehaviour {
         }
         //use binary search to find the farthest point without collision
         var lastValid = 0f;
-        var currentPercentage = 0.5f;
-        var nextStep = 0.25f;
+        var currentPercentage = 0f;
+        var nextStep = 0.5f;
         for(var i = 0;i < maxIterationSteps;i++){
             var posToTest = Vector3.Lerp(pos, endPos, currentPercentage);
             var collided = Physics2D.OverlapBox(posToTest, playerBounds.size, 0, ground);
@@ -228,7 +228,7 @@ public class PlayerMovement : MonoBehaviour {
             }
             nextStep /= 2;
         }
-        transform.position = Vector3.Lerp(transform.position, transform.position+moveStep, currentPercentage);
+        transform.position = Vector3.Lerp(transform.position, transform.position+moveStep, Mathf.Floor(currentPercentage*10f)/10f);
     }
     
     void OnDrawGizmos(){
@@ -237,8 +237,8 @@ public class PlayerMovement : MonoBehaviour {
         
         Vector2 min = playerBounds.center+transform.position-playerBounds.size/2;
         Vector2 max = playerBounds.center+transform.position+playerBounds.size/2;
-        drawLines(Vector2.up,     new Vector2(min.x, max.y), max);
-        drawLines(Vector2.down,       min, new Vector2(max.x, min.y));
+        drawLines(Vector2.up,       new Vector2(min.x, max.y), max);
+        drawLines(Vector2.down,     min, new Vector2(max.x, min.y));
         drawLines(Vector2.right,    new Vector2(max.x, min.y), max);
         drawLines(Vector2.left,     min, new Vector2(min.x, max.y));
     }
