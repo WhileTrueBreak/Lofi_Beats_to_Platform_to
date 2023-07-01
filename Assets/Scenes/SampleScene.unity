@@ -263,9 +263,9 @@ MonoBehaviour:
   aerialHorizontalAccelTime: 0.1
   aerialHorizontalDecelTime: 0.15
   maxFallSpeed: 20
-  jumpForce: 15
-  apexRange: 0
-  apexGravity: -10
+  jumpForce: 20
+  apexRange: 5
+  apexGravity: -20
 --- !u!212 &1112889299
 SpriteRenderer:
   m_ObjectHideFlags: 0
