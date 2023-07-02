@@ -108,9 +108,10 @@ public class PlayerMovement : MonoBehaviour {
         
         calcWalk();
         calcAerial();
-        calcGravity();
+        calcGrab();
         calcJump();
-        
+        calcWallJump();
+        calcGravity();
         cancelVel();
         calcLatestCollision();
     }
@@ -139,7 +140,10 @@ public class PlayerMovement : MonoBehaviour {
         vel.x = Mathf.Clamp(vel.x, -maxHorizontalSpeed, maxHorizontalSpeed);
     }
     
+    private bool disableAerial = false;
+    
     void calcAerial(){
+        if(disableAerial) return;
         if(isGrounded) return;
         // get the current horizontal vel
         var horizontalVel = vel.x;
@@ -157,9 +161,29 @@ public class PlayerMovement : MonoBehaviour {
         vel.x = Mathf.Clamp(vel.x, -maxHorizontalSpeed, maxHorizontalSpeed);
     }
     
+    private bool isGrabbing = false;
+    private float lastGrabbed = -1;
+    private int grabDir = 0;
+    
+    void calcGrab(){
+        isGrabbing = false;
+        grabDir = 0;
+        if(isGrounded) return;
+        if(!collidedLeft && !collidedRight) return;
+        if(vel.y > 0) return;
+        if(collidedLeft && inputLeft) grabDir = -1;
+        if(collidedRight && inputRight) grabDir = 1;
+        if(grabDir != 0){
+            vel.y = 0;
+            isGrabbing = true;
+            lastGrabbed = Time.time;
+        }
+    }
+    
     public float maxFallSpeed;
     
     void calcGravity(){
+        if(isGrabbing) return;
         if(!collidedDown){
             vel.y += currentGravity*Time.deltaTime;
             vel.y = Mathf.Max(vel.y, -maxFallSpeed);
@@ -179,6 +203,35 @@ public class PlayerMovement : MonoBehaviour {
         allowCoyote = false;
         isJumping = true;
         vel.y = jumpForce;
+    }
+    
+    public float wallJumpForce = 20;
+    public float wallJumpLockDirTime = 0.2f;
+    private float lastWallJump = -1;
+    
+    void calcWallJump(){
+        calcJumpHangtime();
+        calcWallJumpTime();
+        if(!isGrabbing) return;
+        if(!inputJump) return;
+        if(Time.time-lastGrabbed > wallJumpBufferTime) return;
+        
+        lastGrabbed = -1;
+        isJumping = true;
+        
+        Vector3 jumpVector = Vector3.up + Vector3.left;
+        jumpVector.Normalize();
+        jumpVector.x *= grabDir;
+        Debug.Log(jumpVector * wallJumpForce);
+        vel += jumpVector * wallJumpForce;
+        lastWallJump = Time.time;
+    }
+    
+    void calcWallJumpTime(){
+        disableAerial = false;
+        if(Time.time - lastWallJump < wallJumpLockDirTime){
+            disableAerial = true;
+        }
     }
     
     public float apexRange = 10;

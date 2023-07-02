@@ -260,10 +260,12 @@ MonoBehaviour:
   maxHorizontalSpeed: 15
   groundedHorizontalAccelTime: 0.1
   groundedHorizontalDecelTime: 0.15
-  aerialHorizontalAccelTime: 0.2
-  aerialHorizontalDecelTime: 0.5
+  aerialHorizontalAccelTime: 0.1
+  aerialHorizontalDecelTime: 0.15
   maxFallSpeed: 30
   jumpForce: 35
+  wallJumpForce: 35
+  wallJumpLockDirTime: 0.5
   apexRange: 10
   apexGravity: -20
 --- !u!212 &1112889299
