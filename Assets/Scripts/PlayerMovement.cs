@@ -44,6 +44,8 @@ public class PlayerMovement : MonoBehaviour {
     
     private bool inputLeft = false;
     private bool inputRight = false;
+    private bool inputUp = false;
+    private bool inputDown = false;
     private bool inputJump = false;
     private bool inputDash = false;
     private float lastJumpInput = -1f;
@@ -53,8 +55,10 @@ public class PlayerMovement : MonoBehaviour {
         // get key input
         inputLeft = Input.GetKey("left");
         inputRight = Input.GetKey("right");
-        inputJump = Input.GetKeyDown("up");
-        inputDash = Input.GetKeyDown("space");
+        inputUp = Input.GetKey("up");
+        inputDown = Input.GetKey("down");
+        inputJump = Input.GetKeyDown("x");
+        inputDash = Input.GetKeyDown("c");
         
         if(inputJump) lastJumpInput = Time.time;
         if(inputDash) lastDashInput = Time.time;
@@ -105,15 +109,22 @@ public class PlayerMovement : MonoBehaviour {
     }
     
     void move(){
-        
+        resetFlags();
         calcWalk();
         calcAerial();
         calcGrab();
         calcJump();
         calcWallJump();
+        calcDash();
         calcGravity();
         cancelVel();
         calcLatestCollision();
+    }
+    
+    void resetFlags(){
+        disableWalk = false;
+        disableAerial = false;
+        disableGravity = false;
     }
     
     public float maxHorizontalSpeed;
@@ -122,7 +133,10 @@ public class PlayerMovement : MonoBehaviour {
     public float aerialHorizontalAccelTime;
     public float aerialHorizontalDecelTime;
     
+    private bool disableWalk = false;
+    
     void calcWalk(){
+        if(disableWalk) return;
         if(!isGrounded) return;
         // get the current horizontal vel
         var horizontalVel = vel.x;
@@ -180,8 +194,9 @@ public class PlayerMovement : MonoBehaviour {
     }
     
     public float maxFallSpeed;
-    
+    private bool disableGravity = false;
     void calcGravity(){
+        if(disableGravity) return;
         // if(isGrabbing) return;
         if(!collidedDown){
             vel.y += currentGravity*Time.deltaTime;
@@ -207,7 +222,7 @@ public class PlayerMovement : MonoBehaviour {
     public float wallJumpForce = 20;
     public float wallJumpLockDirTime = 0.2f;
     private float lastWallJump = -1;
-    public float wallJumpAngle = 60;
+    public float wallJumpAngle = 30;
     
     void calcWallJump(){
         calcJumpHangtime();
@@ -215,20 +230,16 @@ public class PlayerMovement : MonoBehaviour {
         // if(!isGrabbing) return;
         
         // time before grab
-        
-        // time during grab
-        
-        // time after grab
-        
-        
         if(Time.time-lastJumpInput > wallJumpBufferTime && !inputJump) return;
+        // time after grab
         if(Time.time-lastGrabbed > wallJumpBufferTime) return;
         
         lastJumpInput = 1;
         lastGrabbed = -1;
         isJumping = true;
         
-        Vector3 jumpVector = Quaternion.AngleAxis(30,Vector3.forward)*Vector3.up;
+        // calc wall jump direction
+        Vector3 jumpVector = Quaternion.AngleAxis(wallJumpAngle,Vector3.forward)*Vector3.up;
         jumpVector.Normalize();
         jumpVector.x *= grabDir;
         Debug.Log(jumpVector * wallJumpForce);
@@ -237,7 +248,6 @@ public class PlayerMovement : MonoBehaviour {
     }
     
     void calcWallJumpTime(){
-        disableAerial = false;
         if(Time.time - lastWallJump < wallJumpLockDirTime){
             disableAerial = true;
         }
@@ -253,6 +263,62 @@ public class PlayerMovement : MonoBehaviour {
         }
         float dist = Mathf.InverseLerp(apexRange, 0, Mathf.Abs(vel.y));
         currentGravity = Mathf.Lerp(gravity, apexGravity, dist);
+    }
+    
+    public float dashForce = 1000;
+    public float dashFriction = 0.1f;
+    public float dashLockDirTime = 0.5f;
+    private bool isDashing = false;
+    private float lastDash = -1f;
+    
+    void calcDash(){
+        calcDashTime();
+        // figure out what to do during dash
+        calcDash_();
+        //not grounded
+        if(isGrounded) return;
+        //dash input
+        if(!inputDash) return;
+        //not dashing
+        if(isDashing) return;
+        
+        //get dash dir
+        Vector3 dashVec = new Vector3(0,0,0);
+        if(inputLeft) dashVec += Vector3.left;
+        if(inputRight) dashVec += Vector3.right;
+        if(inputDown) dashVec += Vector3.down;
+        if(inputUp) dashVec += Vector3.up;
+        dashVec.Normalize();
+        
+        //check if dash has direction
+        if(dashVec.magnitude < 0.1) return;
+        
+        //start dash
+        lastDash = Time.time;
+        isDashing = true;
+        vel = dashVec*dashForce;
+    }
+    
+    void calcDashTime(){
+        if(vel.magnitude < 0.5) {
+            isDashing = false;
+            lastDash = -1;
+            return;
+        }
+        if(Time.time - lastDash <= dashLockDirTime){
+            disableWalk = true;
+            disableAerial = true;
+            disableGravity = true;
+        }else{
+            isDashing = false;
+        }
+    }
+    
+    void calcDash_(){
+        if(!isDashing) return;
+        // Vector3 velBackDir = -vel;
+        // velBackDir.Normalize();
+        // vel += velBackDir*dashFriction*Time.deltaTime;
     }
     
     void cancelVel(){

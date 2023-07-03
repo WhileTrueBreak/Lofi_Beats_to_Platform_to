@@ -269,6 +269,9 @@ MonoBehaviour:
   wallJumpAngle: 60
   apexRange: 10
   apexGravity: -20
+  dashForce: 100
+  dashFriction: 0.4
+  dashLockDirTime: 0.5
 --- !u!212 &1112889299
 SpriteRenderer:
   m_ObjectHideFlags: 0
