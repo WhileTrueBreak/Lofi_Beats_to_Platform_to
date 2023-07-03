@@ -167,14 +167,13 @@ public class PlayerMovement : MonoBehaviour {
     
     void calcGrab(){
         isGrabbing = false;
-        grabDir = 0;
         if(isGrounded) return;
         if(!collidedLeft && !collidedRight) return;
         if(vel.y > 0) return;
-        if(collidedLeft && inputLeft) grabDir = -1;
-        if(collidedRight && inputRight) grabDir = 1;
+        if(collidedLeft) grabDir = -1;
+        if(collidedRight) grabDir = 1;
         if(grabDir != 0){
-            vel.y = 0;
+            // vel.y = 0;
             isGrabbing = true;
             lastGrabbed = Time.time;
         }
@@ -183,7 +182,7 @@ public class PlayerMovement : MonoBehaviour {
     public float maxFallSpeed;
     
     void calcGravity(){
-        if(isGrabbing) return;
+        // if(isGrabbing) return;
         if(!collidedDown){
             vel.y += currentGravity*Time.deltaTime;
             vel.y = Mathf.Max(vel.y, -maxFallSpeed);
@@ -208,22 +207,32 @@ public class PlayerMovement : MonoBehaviour {
     public float wallJumpForce = 20;
     public float wallJumpLockDirTime = 0.2f;
     private float lastWallJump = -1;
+    public float wallJumpAngle = 60;
     
     void calcWallJump(){
         calcJumpHangtime();
         calcWallJumpTime();
-        if(!isGrabbing) return;
-        if(!inputJump) return;
+        // if(!isGrabbing) return;
+        
+        // time before grab
+        
+        // time during grab
+        
+        // time after grab
+        
+        
+        if(Time.time-lastJumpInput > wallJumpBufferTime && !inputJump) return;
         if(Time.time-lastGrabbed > wallJumpBufferTime) return;
         
+        lastJumpInput = 1;
         lastGrabbed = -1;
         isJumping = true;
         
-        Vector3 jumpVector = Vector3.up + Vector3.left;
+        Vector3 jumpVector = Quaternion.AngleAxis(30,Vector3.forward)*Vector3.up;
         jumpVector.Normalize();
         jumpVector.x *= grabDir;
         Debug.Log(jumpVector * wallJumpForce);
-        vel += jumpVector * wallJumpForce;
+        vel = jumpVector * wallJumpForce;
         lastWallJump = Time.time;
     }
     
@@ -247,10 +256,20 @@ public class PlayerMovement : MonoBehaviour {
     }
     
     void cancelVel(){
-        if(collidedRight && vel.x > 0) vel.x = 0;
-        if(collidedLeft && vel.x < 0) vel.x = 0;
-        if(collidedUp && vel.y > 0) vel.y = 0;
-        if(collidedDown && vel.y < 0) vel.y = 0;
+        if(collidedRight && vel.x > 0) {
+            vel.x = 0;
+            lastWallJump = -1;
+        }
+        if(collidedLeft && vel.x < 0) {
+            vel.x = 0;
+            lastWallJump = -1;
+        }
+        if(collidedUp && vel.y > 0) {
+            vel.y = 0;
+        }
+        if(collidedDown && vel.y < 0) {
+            vel.y = 0;
+        }
     }
     
     private int maxIterationSteps = 10;

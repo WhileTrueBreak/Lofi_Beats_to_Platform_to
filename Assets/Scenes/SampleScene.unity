@@ -245,8 +245,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06094a6433b18fe468bb0bceeb34bd9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallJumpBufferTime: 0.2
-  jumpBufferTime: 0.2
+  wallJumpBufferTime: 0.05
+  jumpBufferTime: 0.05
   coyoteBufferTime: 0.1
   gravity: -120
   playerBounds:
@@ -266,6 +266,7 @@ MonoBehaviour:
   jumpForce: 35
   wallJumpForce: 35
   wallJumpLockDirTime: 0.5
+  wallJumpAngle: 60
   apexRange: 10
   apexGravity: -20
 --- !u!212 &1112889299
