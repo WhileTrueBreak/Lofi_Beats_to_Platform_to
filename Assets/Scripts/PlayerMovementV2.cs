@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovementV2 : MonoBehaviour
-{
+public class PlayerMovementV2 : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         
@@ -43,6 +42,13 @@ public class PlayerMovementV2 : MonoBehaviour
     [SerializeField] private float collidedCheckRange;
     [SerializeField] private int rayCount;
     
+    private float lastGrounded;
+    private bool isGrounded = false;
+    private bool collidedDown = false;
+    private bool collidedRight = false;
+    private bool collidedLeft = false;
+    private bool collidedUp = false;
+    
     void checkCollisions(){
         Vector2 min = playerBounds.center+transform.position-playerBounds.size/2;
         Vector2 max = playerBounds.center+transform.position+playerBounds.size/2;
@@ -67,18 +73,69 @@ public class PlayerMovementV2 : MonoBehaviour
         return false;
     }
     
+    // flags
     private bool allowWalk = true;
     private bool allowAerial = false;
     private bool allowGravity = true;
     private bool allowJump = false;
     private bool allowWallJump = false;
-    private bool allowDash = false; 
+    private bool allowDash = false;
     private bool isJumping = false;
+    private bool isJumpStart = false;
     private bool isDashing = false;
-    private bool 
+    
+    // timers
+    private float lastDash = -1;
+    private float lastJump = -1;
+    private float lastOnWall = -1;
     
     void setFlags(){
+        resetFlags();
+        checkWalkFlag();
+        checkAerialFlag();
+        checkGravityFlag();
+        checkJumpFlag();
+        checkWallJumpFlag();
+        checkDashFlag();
+    }
+    
+    void resetFlags(){
+        allowWalk = true;
+        allowAerial = false;
+        allowGravity = true;
+        allowJump = false;
+        allowWallJump = false;
+        allowDash = false; 
+    }
+    
+    void checkWalkFlag(){
+        if(!isGrounded) allowWalk = false;
+    }
+    
+    void checkAerialFlag(){
+        if(!isGrounded) allowAerial = true;
+    }
+    
+    void checkGravityFlag(){
+        if(isDashing) allowGravity = false;
+        if(isJumpStart) allowGravity = false;
+    }
+    
+    void checkJumpFlag(){
+        if(isGrounded) allowJump = true;
+        // maybe cancel jump when hitting roof?
         
+        // must be jumping to be at teh start of a jump
+        if(!isJumping) isJumpStart = false;
+    }
+    
+    void checkWallJumpFlag(){
+        // check if on wall and not on ground
+        if((collidedLeft||collidedRight)&&!isGrounded) allowWallJump = true;
+    }
+    
+    void checkDashFlag(){
+        if(!isGrounded) allowDash = true;
     }
     
     void calcMovement(){
