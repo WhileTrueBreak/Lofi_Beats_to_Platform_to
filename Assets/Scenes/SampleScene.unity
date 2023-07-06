@@ -225,7 +225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1112889300}
   - component: {fileID: 1112889299}
-  - component: {fileID: 1112889298}
+  - component: {fileID: 1112889301}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -233,45 +233,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1112889298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1112889297}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06094a6433b18fe468bb0bceeb34bd9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wallJumpBufferTime: 0.05
-  jumpBufferTime: 0.05
-  coyoteBufferTime: 0.1
-  gravity: -120
-  playerBounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.49, y: 0.49, z: 0}
-  ground:
-    serializedVersion: 2
-    m_Bits: 64
-  collidedCheckRange: 0.05
-  rayCount: 5
-  maxHorizontalSpeed: 15
-  groundedHorizontalAccelTime: 0.1
-  groundedHorizontalDecelTime: 0.15
-  aerialHorizontalAccelTime: 0.1
-  aerialHorizontalDecelTime: 0.15
-  maxFallSpeed: 30
-  jumpForce: 35
-  wallJumpForce: 35
-  wallJumpLockDirTime: 0.5
-  wallJumpAngle: 60
-  apexRange: 10
-  apexGravity: -20
-  dashForce: 100
-  dashFriction: 0.4
-  dashLockDirTime: 0.5
 --- !u!212 &1112889299
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -313,7 +274,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 1987701378, guid: ac942e703ce2e7043a15478eff602bd1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -339,6 +300,38 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1112889301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112889297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9effb431a7bb3e543ad614a3f043f2f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vel: {x: 0, y: 0, z: 0}
+  currentGravity: 0
+  playerBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.49, y: 0.49, z: 0}
+  ground:
+    serializedVersion: 2
+    m_Bits: 64
+  collidedCheckRange: 0.03
+  rayCount: 5
+  gravity: 120
+  maxFallSpeed: 20
+  jumpInputBuffer: 0.1
+  coyoteBuffer: 0.1
+  jumpForce: 40
+  apexRange: 10
+  apexGravity: 30
+  dashForce: 60
+  dashDuration: 0.3
+  dashEndSpeed: 10
 --- !u!1 &1368007046
 GameObject:
   m_ObjectHideFlags: 0
