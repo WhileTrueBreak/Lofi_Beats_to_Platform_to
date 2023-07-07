@@ -147,8 +147,8 @@ public class PlayerMovement : MonoBehaviour {
             acc = Mathf.Min(maxHorizontalSpeed/(isGrounded?groundedHorizontalDecelTime:aerialHorizontalDecelTime), Mathf.Abs(horizontalVel)/Time.deltaTime) * -Mathf.Sign(horizontalVel);
         }
         // calc horizontal acc
-        else if(inputLeft) acc = -maxHorizontalSpeed/(groundedHorizontalAccelTime);
-        else if(inputRight) acc = maxHorizontalSpeed/(groundedHorizontalAccelTime);
+        else if(inputLeft)  acc = -maxHorizontalSpeed/(groundedHorizontalAccelTime);
+        else if(inputRight) acc =  maxHorizontalSpeed/(groundedHorizontalAccelTime);
         // added to vel
         vel.x += acc*Time.deltaTime;
         vel.x = Mathf.Clamp(vel.x, -maxHorizontalSpeed, maxHorizontalSpeed);

@@ -32,6 +32,8 @@ public class PlayerMovementV2 : MonoBehaviour {
     private bool inputDash = false;
     private float lastJumpInput = -1f;
     private float lastDashInput = -1f;
+    private float lastMoveInput = -1f;
+    private float lastStopInput = -1f;
     
     void getInputs(){
         // get key input
@@ -44,6 +46,8 @@ public class PlayerMovementV2 : MonoBehaviour {
         
         if(inputJump) lastJumpInput = Time.time;
         if(inputDash) lastDashInput = Time.time;
+        if(inputLeft || inputRight) lastMoveInput = Time.time;
+        else lastStopInput = Time.time;
     }
     
     #region collision
@@ -68,6 +72,10 @@ public class PlayerMovementV2 : MonoBehaviour {
         collidedRight = castRays(Vector2.right, new Vector2(max.x, min.y), max);
         collidedLeft = castRays(Vector2.left,   min, new Vector2(min.x, max.y));
         
+        // Debug.Log("up:" + collidedUp);
+        // Debug.Log("down:" + collidedDown);
+        // Debug.Log("left:" + collidedLeft);
+        // Debug.Log("right:" + collidedRight);
         // check if just left ground
         if(isGrounded && !collidedDown) lastGrounded = Time.time;
         
@@ -137,6 +145,7 @@ public class PlayerMovementV2 : MonoBehaviour {
             allowJump = true;
             isJumping = false;
         }
+        if(isDashing) isJumping = false;
         // maybe cancel jump when hitting roof?
         
         // must be jumping to be at teh start of a jump
@@ -158,18 +167,21 @@ public class PlayerMovementV2 : MonoBehaviour {
     
     // walk params
     #region walk
-    
+    public float maxWalkSpeed;
+    public float walkDecelTime;
+    public float walkAccelTime;
     #endregion
     // aerial params
     #region aerial
-    
+    public float maxAerialSpeed;
+    public float aerialDecelTime;
+    public float aerialAccelTime;
     #endregion
     // gravity params
     #region gravity
     public float gravity;
     public float maxFallSpeed;
     #endregion
-    
     // jump params
     #region jump
     public float jumpInputBuffer;
@@ -178,7 +190,6 @@ public class PlayerMovementV2 : MonoBehaviour {
     public float apexRange;
     public float apexGravity;
     #endregion
-    
     // wall jump params
     #region wall jump
     
@@ -191,7 +202,6 @@ public class PlayerMovementV2 : MonoBehaviour {
     #endregion
     
     void calcMovement(){
-        cancelVel();
         calcWalk();
         calcAerialControl();
         calcJump();
@@ -200,17 +210,42 @@ public class PlayerMovementV2 : MonoBehaviour {
         calcDash();
         calcDashTime();
         calcGravity();
+        cancelVel();
         calcNextPosition();
     }
     
     void calcWalk(){
         if(!allowWalk) return;
+        var hozVel = vel.x;
+        // opposite to input
+        // if both inputs are active
+        // if no inputs are active
+        var isMoveOpposite = ((System.Math.Sign(hozVel) == 1) && inputLeft) || ((System.Math.Sign(hozVel) == -1) && inputRight);
+        if (!inputLeft ^ inputRight || isMoveOpposite) {
+            hozVel = Mathf.MoveTowards(hozVel, 0, maxWalkSpeed/walkDecelTime*Time.deltaTime);
+        }
         
+        else if(inputLeft)  hozVel = Mathf.MoveTowards(hozVel, -maxWalkSpeed, maxWalkSpeed/walkAccelTime*Time.deltaTime);
+        else if(inputRight) hozVel = Mathf.MoveTowards(hozVel,  maxWalkSpeed, maxWalkSpeed/walkAccelTime*Time.deltaTime);
+        
+        vel.x = hozVel;
     }
     
     void calcAerialControl(){
         if(!allowAerial) return;
+        var hozVel = vel.x;
+        // opposite to input
+        // if both inputs are active
+        // if no inputs are active
+        var isMoveOpposite = ((System.Math.Sign(hozVel) == 1) && inputLeft) || ((System.Math.Sign(hozVel) == -1) && inputRight);
+        if (!inputLeft ^ inputRight || isMoveOpposite) {
+            hozVel = Mathf.MoveTowards(hozVel, 0, maxAerialSpeed/aerialDecelTime*Time.deltaTime);
+        }
         
+        else if(inputLeft)  hozVel = Mathf.MoveTowards(hozVel, -maxAerialSpeed, maxAerialSpeed/aerialAccelTime*Time.deltaTime);
+        else if(inputRight) hozVel = Mathf.MoveTowards(hozVel,  maxAerialSpeed, maxAerialSpeed/aerialAccelTime*Time.deltaTime);
+        
+        vel.x = hozVel;
     }
     
     void calcGravity(){

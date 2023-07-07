@@ -322,6 +322,12 @@ MonoBehaviour:
     m_Bits: 64
   collidedCheckRange: 0.03
   rayCount: 5
+  maxWalkSpeed: 10
+  walkDecelTime: 0.1
+  walkAccelTime: 0.15
+  maxAerialSpeed: 10
+  aerialDecelTime: 0.1
+  aerialAccelTime: 0.15
   gravity: 120
   maxFallSpeed: 20
   jumpInputBuffer: 0.1
