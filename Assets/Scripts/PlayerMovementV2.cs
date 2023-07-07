@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMovementV2 : MonoBehaviour {
     #region variables
     public Vector3 vel;
+    public Vector3 facing;
     
     //other variables
     public float currentGravity;
@@ -58,6 +59,7 @@ public class PlayerMovementV2 : MonoBehaviour {
     #endregion
     
     private float lastGrounded;
+    private float lastInAir;
     private bool isGrounded = false;
     private bool collidedDown = false;
     private bool collidedRight = false;
@@ -80,6 +82,7 @@ public class PlayerMovementV2 : MonoBehaviour {
         isGrounded = collidedDown;
         
         if(isGrounded) lastGrounded = Time.time;
+        else lastInAir = Time.time;
     }
     
     bool castRays(Vector2 dir, Vector2 start, Vector2 end){
@@ -99,9 +102,12 @@ public class PlayerMovementV2 : MonoBehaviour {
     private bool allowWallJump = false;
     private bool allowDash = false;
     private bool allowCoyote = false;
+    private bool allowWallGrab = false;
     private bool isJumping = false;
     private bool isJumpStart = false;
     private bool isDashing = false;
+    private bool isSliding = false;
+    private bool isWallGrabbing = false;
     
     // timers
     private float lastDash = -1;
@@ -113,9 +119,18 @@ public class PlayerMovementV2 : MonoBehaviour {
         checkJumpFlag();
         checkWallJumpFlag();
         checkDashFlag();
+        checkWallGrab();
         checkWalkFlag();
         checkAerialFlag();
         checkGravityFlag();
+    }
+    
+    void checkWallGrab(){
+        if(collidedLeft  && facing.x < 0) allowWallGrab = true;
+        if(collidedRight && facing.x > 0) allowWallGrab = true;
+        if(inputDown) allowWallGrab = false;
+        if(isDashing) allowWallGrab = false;
+        if(!allowWallGrab) isWallGrabbing = false;
     }
     
     void resetFlags(){
@@ -125,6 +140,7 @@ public class PlayerMovementV2 : MonoBehaviour {
         allowJump = false;
         allowWallJump = false;
         allowDash = false; 
+        allowWallGrab = false;
     }
     
     void checkWalkFlag(){
@@ -158,12 +174,14 @@ public class PlayerMovementV2 : MonoBehaviour {
     
     void checkWallJumpFlag(){
         // check if on wall and not on ground
-        if((collidedLeft||collidedRight)&&!isGrounded) allowWallJump = true;
+        if(isWallGrabbing && !isGrounded) allowWallJump = true;
     }
     
     void checkDashFlag(){
-        if(!isGrounded) allowDash = true;
-        if(collidedLeft || collidedRight || collidedDown || collidedUp) {
+        if(Time.time-lastInAir < dashBuffer) allowDash = true;
+        
+        // check if dash direction collides with anything
+        if((collidedLeft && vel.x < 0) || (collidedRight && vel.x > 0) || (collidedDown && vel.y < 0) || (collidedUp && vel.y > 0)) {
             isDashing = false;
             lastDash = -1;
         }
@@ -196,19 +214,27 @@ public class PlayerMovementV2 : MonoBehaviour {
     #endregion
     // wall jump params
     #region wall jump
-    
+    public float wallJumpInputBuffer;
+    public float wallJumpAngle;
+    public float wallJumpForce;
     #endregion
     // dash params
     #region dash
+    public float dashBuffer;
     public float dashForce;
     public float dashDuration;
     public float dashEndSpeed;
+    #endregion
+    // wall grab params
+    #region wall grab
+    public float grabFallSpeed;
     #endregion
     
     void calcMovement(){
         calcWalk();
         calcAerialControl();
         calcJump();
+        calcWallGrab();
         calcWallJump();
         calcJumpAirTime();
         calcDash();
@@ -216,6 +242,13 @@ public class PlayerMovementV2 : MonoBehaviour {
         calcGravity();
         cancelVel();
         calcNextPosition();
+    }
+    
+    void calcWallGrab(){
+        if(!allowWallGrab) return;
+        // clamp max down speed to grab speed
+        vel.y = Mathf.Clamp(vel.y, -grabFallSpeed, Mathf.Infinity);
+        isWallGrabbing = true;
     }
     
     void calcWalk(){
@@ -229,8 +262,14 @@ public class PlayerMovementV2 : MonoBehaviour {
             hozVel = Mathf.MoveTowards(hozVel, 0, maxWalkSpeed/walkDecelTime*Time.deltaTime);
         }
         
-        else if(inputLeft)  hozVel = Mathf.MoveTowards(hozVel, -maxWalkSpeed, maxWalkSpeed/walkAccelTime*Time.deltaTime);
-        else if(inputRight) hozVel = Mathf.MoveTowards(hozVel,  maxWalkSpeed, maxWalkSpeed/walkAccelTime*Time.deltaTime);
+        else if(inputLeft)  {
+            hozVel = Mathf.MoveTowards(hozVel, -maxWalkSpeed, maxWalkSpeed/walkAccelTime*Time.deltaTime);
+            facing = Vector3.left;
+        }
+        else if(inputRight) {
+            hozVel = Mathf.MoveTowards(hozVel,  maxWalkSpeed, maxWalkSpeed/walkAccelTime*Time.deltaTime);
+            facing = Vector3.right;
+        }
         
         vel.x = hozVel;
     }
@@ -246,8 +285,14 @@ public class PlayerMovementV2 : MonoBehaviour {
             hozVel = Mathf.MoveTowards(hozVel, 0, maxAerialSpeed/aerialDecelTime*Time.deltaTime);
         }
         
-        else if(inputLeft)  hozVel = Mathf.MoveTowards(hozVel, -maxAerialSpeed, maxAerialSpeed/aerialAccelTime*Time.deltaTime);
-        else if(inputRight) hozVel = Mathf.MoveTowards(hozVel,  maxAerialSpeed, maxAerialSpeed/aerialAccelTime*Time.deltaTime);
+        else if(inputLeft) {
+            hozVel = Mathf.MoveTowards(hozVel, -maxAerialSpeed, maxAerialSpeed/aerialAccelTime*Time.deltaTime);
+            facing = Vector3.left;
+        }
+        else if(inputRight) {
+            hozVel = Mathf.MoveTowards(hozVel,  maxAerialSpeed, maxAerialSpeed/aerialAccelTime*Time.deltaTime);
+            facing = Vector3.right;
+        }
         
         vel.x = hozVel;
     }
@@ -281,7 +326,17 @@ public class PlayerMovementV2 : MonoBehaviour {
     
     void calcWallJump(){
         if(!allowWallJump) return;
+        // check for last jump input
+        if(Time.time-lastJumpInput > wallJumpInputBuffer) return;
+        lastJumpInput = -1;
+        isJumping = true;
+        //calculate jump direction
+        float rad = wallJumpAngle*Mathf.Deg2Rad;
+        Vector3 dir = new Vector3(Mathf.Sin(rad), Mathf.Cos(rad), 0);
+        dir.x *= -System.Math.Sign(facing.x);
+        facing.x = -facing.x;
         
+        vel = dir*wallJumpForce;
     }
     
     void calcDash(){
@@ -296,6 +351,8 @@ public class PlayerMovementV2 : MonoBehaviour {
         if(inputUp) dashVec += Vector3.up;
         dashVec.Normalize();
         if(dashVec.magnitude < 0.1) return;
+        
+        facing = new Vector3(1*System.Math.Sign(dashVec.x),0,0);
         
         lastDash = Time.time;
         isDashing = true;

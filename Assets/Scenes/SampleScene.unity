@@ -313,6 +313,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vel: {x: 0, y: 0, z: 0}
+  facing: {x: 0, y: 0, z: 0}
   currentGravity: 0
   playerBounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -328,16 +329,21 @@ MonoBehaviour:
   maxAerialSpeed: 10
   aerialDecelTime: 0.1
   aerialAccelTime: 0.15
-  gravity: 120
+  gravity: 160
   maxFallSpeed: 20
   jumpInputBuffer: 0.1
   coyoteBuffer: 0.1
   jumpForce: 40
   apexRange: 10
   apexGravity: 30
+  wallJumpInputBuffer: 0.1
+  wallJumpAngle: 45
+  wallJumpForce: 50
+  dashBuffer: 0.1
   dashForce: 60
   dashDuration: 0.3
   dashEndSpeed: 10
+  grabFallSpeed: 5
 --- !u!1 &1368007046
 GameObject:
   m_ObjectHideFlags: 0
