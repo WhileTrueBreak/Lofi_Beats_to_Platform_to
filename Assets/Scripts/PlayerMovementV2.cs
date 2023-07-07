@@ -152,7 +152,7 @@ public class PlayerMovementV2 : MonoBehaviour {
         if(isDashing) isJumping = false;
         // maybe cancel jump when hitting roof?
         
-        // must be jumping to be at teh start of a jump
+        // must be jumping to be at the start of a jump
         if(!isJumping) isJumpStart = false;
     }
     
