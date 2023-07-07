@@ -76,10 +76,10 @@ public class PlayerMovementV2 : MonoBehaviour {
         // Debug.Log("down:" + collidedDown);
         // Debug.Log("left:" + collidedLeft);
         // Debug.Log("right:" + collidedRight);
-        // check if just left ground
-        if(isGrounded && !collidedDown) lastGrounded = Time.time;
         
         isGrounded = collidedDown;
+        
+        if(isGrounded) lastGrounded = Time.time;
     }
     
     bool castRays(Vector2 dir, Vector2 start, Vector2 end){
@@ -142,9 +142,13 @@ public class PlayerMovementV2 : MonoBehaviour {
     
     void checkJumpFlag(){
         if(isGrounded) {
+            allowCoyote = true;
             allowJump = true;
             isJumping = false;
         }
+        // check for coyote time
+        if(Time.time-lastGrounded < coyoteBuffer && allowCoyote) allowJump = true;
+        
         if(isDashing) isJumping = false;
         // maybe cancel jump when hitting roof?
         
@@ -259,8 +263,6 @@ public class PlayerMovementV2 : MonoBehaviour {
         if(!allowJump) return;
         // check for last jump input
         if(Time.time-lastJumpInput > jumpInputBuffer) return;
-        // check for coyote time
-        if((Time.time-lastGrounded > coyoteBuffer)&&allowCoyote) return;
         
         lastJumpInput = -1;
         allowCoyote = false;
