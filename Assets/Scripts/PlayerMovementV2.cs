@@ -149,6 +149,7 @@ public class PlayerMovementV2 : MonoBehaviour {
     
     void checkAerialFlag(){
         if(!isGrounded) allowAerial = true;
+        if(isWallGrabbing) allowAerial = false;
     }
     
     void checkGravityFlag(){
