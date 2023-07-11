@@ -66,23 +66,57 @@ public class PlayerMovementV2 : MonoBehaviour {
     private bool collidedLeft = false;
     private bool collidedUp = false;
     
+    public float collisionBumpBuffer;
+    
     void checkCollisions(){
-        Vector2 min = playerBounds.center+transform.position-playerBounds.size/2;
-        Vector2 max = playerBounds.center+transform.position+playerBounds.size/2;
-        collidedUp = castRays(Vector2.up,       new Vector2(min.x, max.y), max);
-        collidedDown = castRays(Vector2.down,   min, new Vector2(max.x, min.y));
-        collidedRight = castRays(Vector2.right, new Vector2(max.x, min.y), max);
-        collidedLeft = castRays(Vector2.left,   min, new Vector2(min.x, max.y));
+        Vector2 offset = new Vector2(0,0);
+        getCollideDirs(offset);
+        // test vertical offset
+        // get hoz direction
+        if(vel.x > 0 && collidedRight){
+            getCollideDirs(new Vector2(0, collisionBumpBuffer));
+            if(!collidedRight)offset.y =  collisionBumpBuffer;
+            getCollideDirs(new Vector2(0,-collisionBumpBuffer));
+            if(!collidedRight)offset.y = -collisionBumpBuffer;
+        }else if(vel.x < 0 && collidedLeft){
+            getCollideDirs(new Vector2(0, collisionBumpBuffer));
+            if(!collidedLeft)offset.y  =  collisionBumpBuffer;
+            getCollideDirs(new Vector2(0,-collisionBumpBuffer));
+            if(!collidedLeft)offset.y  = -collisionBumpBuffer;
+        }
+        // get up direction
+        if(vel.y > 0 && collidedUp){
+            getCollideDirs(new Vector2( collisionBumpBuffer, 0));
+            if(!collidedUp) offset.x =  collisionBumpBuffer;
+            getCollideDirs(new Vector2(-collisionBumpBuffer, 0));
+            if(!collidedUp) offset.x = -collisionBumpBuffer;
+        }
         
-        // Debug.Log("up:" + collidedUp);
-        // Debug.Log("down:" + collidedDown);
-        // Debug.Log("left:" + collidedLeft);
-        // Debug.Log("right:" + collidedRight);
+        //check if new offset position collides
+        Vector3 playerPos = playerBounds.center+transform.position;
+        Vector3 playerOffset = offset;
+        var hasCollision = Physics2D.OverlapBox(playerPos+playerOffset, playerBounds.size, 0, ground);
+        
+        //if no collision move player
+        if(!hasCollision)
+        transform.position += playerOffset;
+        
+        //get final collisions
+        getCollideDirs(new Vector2(0,0));
         
         isGrounded = collidedDown;
         
         if(isGrounded) lastGrounded = Time.time;
         else lastInAir = Time.time;
+    }
+    
+    void getCollideDirs(Vector2 offset){
+        Vector2 min = playerBounds.center+transform.position-playerBounds.size/2+offset;
+        Vector2 max = playerBounds.center+transform.position+playerBounds.size/2+offset;
+        collidedUp =    castRays(Vector2.up,    new Vector2(min.x, max.y), max);
+        collidedDown =  castRays(Vector2.down,  min, new Vector2(max.x, min.y));
+        collidedRight = castRays(Vector2.right, new Vector2(max.x, min.y), max);
+        collidedLeft =  castRays(Vector2.left,  min, new Vector2(min.x, max.y));
     }
     
     bool castRays(Vector2 dir, Vector2 start, Vector2 end){
