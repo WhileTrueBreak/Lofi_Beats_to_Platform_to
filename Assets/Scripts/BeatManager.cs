@@ -53,11 +53,10 @@ public class BeatManager : MonoBehaviour
         /*
         Returns True if called on beat, otherwise False
         */
-        String s = String.Format("{0}: Sampled Time: {1,5}, Lower: {2,5}, Upper: {3,5}",
+        String s = String.Format("{0}: Sampled Time: {1,5}, Off by: {2,5}",
                         (sampledTime < Mathf.Round(sampledTime)+_buffer & sampledTime > Mathf.Round(sampledTime)-_buffer ? "ON TIME":(sampledTime > Mathf.Round(sampledTime) ? "LATE":"EARLY")),
                          sampledTime,
-                         Mathf.Round(sampledTime)-_buffer,
-                         Mathf.Round(sampledTime)+_buffer);
+                         Mathf.Round(sampledTime)-sampledTime);
         Debug.Log(s);
 
         return (sampledTime < Mathf.Round(sampledTime)+_buffer & sampledTime > Mathf.Round(sampledTime)-_buffer);

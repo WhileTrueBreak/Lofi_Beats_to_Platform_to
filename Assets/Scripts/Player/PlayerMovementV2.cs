@@ -25,6 +25,9 @@ public class PlayerMovementV2 : MonoBehaviour {
         calcMovement();
     }
     
+    [SerializeField] BeatManager _beatManager;
+    private bool _isOnBeat;
+
     private bool inputLeft = false;
     private bool inputRight = false;
     private bool inputUp = false;
@@ -45,10 +48,20 @@ public class PlayerMovementV2 : MonoBehaviour {
         inputJump = Input.GetKeyDown("x");
         inputDash = Input.GetKeyDown("c");
         
-        if(inputJump) lastJumpInput = Time.time;
-        if(inputDash) lastDashInput = Time.time;
+        if(inputJump){
+            lastJumpInput = Time.time;
+            checkTiming();
+        }
+        if(inputDash) {
+            lastDashInput = Time.time;
+            checkTiming();
+        }
         if(inputLeft || inputRight) lastMoveInput = Time.time;
         else lastStopInput = Time.time;
+    }
+
+    void checkTiming(){
+        _isOnBeat = _beatManager.IsOnBeat();
     }
     
     #region collision
