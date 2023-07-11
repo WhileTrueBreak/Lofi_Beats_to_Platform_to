@@ -622,6 +622,7 @@ MonoBehaviour:
   vel: {x: 0, y: 0, z: 0}
   facing: {x: 0, y: 0, z: 0}
   currentGravity: 0
+  _beatManager: {fileID: 0}
   playerBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0.49, y: 0.49, z: 0}
@@ -630,6 +631,7 @@ MonoBehaviour:
     m_Bits: 64
   collidedCheckRange: 0.03
   rayCount: 5
+  collisionBumpBuffer: 0.05
   maxWalkSpeed: 10
   walkDecelTime: 0.12
   walkAccelTime: 0.2

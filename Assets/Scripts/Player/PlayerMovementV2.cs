@@ -124,8 +124,10 @@ public class PlayerMovementV2 : MonoBehaviour {
     }
     
     void getCollideDirs(Vector2 offset){
-        Vector2 min = playerBounds.center+transform.position-playerBounds.size/2+offset;
-        Vector2 max = playerBounds.center+transform.position+playerBounds.size/2+offset;
+        Vector2 min = playerBounds.center+transform.position-playerBounds.size/2;
+        Vector2 max = playerBounds.center+transform.position+playerBounds.size/2;
+        min += offset;
+        max += offset;
         collidedUp =    castRays(Vector2.up,    new Vector2(min.x, max.y), max);
         collidedDown =  castRays(Vector2.down,  min, new Vector2(max.x, min.y));
         collidedRight = castRays(Vector2.right, new Vector2(max.x, min.y), max);
