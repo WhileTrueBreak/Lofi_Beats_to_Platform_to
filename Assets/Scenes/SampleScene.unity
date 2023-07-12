@@ -492,12 +492,27 @@ MonoBehaviour:
   _buffer: 0.25
   _audioSource: {fileID: 2741787}
   _subdivision: 1
-  _trigger:
+  onBeatTrigger:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 122626804}
         m_TargetAssemblyTypeName: TestBeatResponse, Assembly-CSharp
         m_MethodName: Pulse
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  endBeatTrigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1670156107}
+        m_TargetAssemblyTypeName: StaminaManager, Assembly-CSharp
+        m_MethodName: passiveLoss
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
