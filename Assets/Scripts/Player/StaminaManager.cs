@@ -13,6 +13,8 @@ public class StaminaManager : MonoBehaviour {
     public int dashCost;
     public int wallJumpCost;
     public int onBeatGain;
+
+    private bool staminaFlag;
     
     // Start is called before the first frame update
     void Start() {
@@ -26,6 +28,7 @@ public class StaminaManager : MonoBehaviour {
     }
 
     public void addStamina(int value){
+        staminaFlag = true;
         if (currentStamina < maxStamina){
             currentStamina += value;
         }
@@ -33,6 +36,7 @@ public class StaminaManager : MonoBehaviour {
     }
 
     public void removeStamina(int value){
+        staminaFlag = true;
         if (currentStamina > 0){
             currentStamina -= value;
         }
@@ -42,7 +46,12 @@ public class StaminaManager : MonoBehaviour {
     public int getStamina(){
         return currentStamina;
     }
-    
-    
-    
+
+    public void passiveLoss(){
+        if (!staminaFlag){
+            removeStamina(1);
+        }else{
+            staminaFlag = false;
+        }
+    }
 }
