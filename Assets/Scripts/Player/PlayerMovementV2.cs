@@ -26,6 +26,7 @@ public class PlayerMovementV2 : MonoBehaviour {
     }
     
     [SerializeField] BeatManager _beatManager;
+    [SerializeField] StaminaManager _staminaManager;
     private bool _isOnBeat;
 
     private bool inputLeft = false;
@@ -51,10 +52,24 @@ public class PlayerMovementV2 : MonoBehaviour {
         if(inputJump){
             lastJumpInput = Time.time;
             checkTiming();
+            if (_isOnBeat){
+                _staminaManager.addStamina(_staminaManager.onBeatGain);
+            }else{
+                _staminaManager.removeStamina(_staminaManager.onBeatGain);
+            }
         }
         if(inputDash) {
-            lastDashInput = Time.time;
-            checkTiming();
+            if (_staminaManager.getStamina() >= _staminaManager.dashCost){
+                lastDashInput = Time.time;
+                checkTiming();
+                _staminaManager.removeStamina(_staminaManager.dashCost);
+                if (_isOnBeat){
+                    _staminaManager.addStamina(_staminaManager.onBeatGain);
+                }
+            }else{
+                inputDash = false;
+            }
+            
         }
         if(inputLeft || inputRight) lastMoveInput = Time.time;
         else lastStopInput = Time.time;
@@ -62,6 +77,7 @@ public class PlayerMovementV2 : MonoBehaviour {
 
     void checkTiming(){
         _isOnBeat = _beatManager.IsOnBeat();
+
     }
     
     #region collision

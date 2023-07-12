@@ -35,7 +35,7 @@ public class BeatManager : MonoBehaviour
         sampledTime = ((_audioSource.timeSamples + ConvertToSamples(_localOffset)) / ConvertToSamples(GetBeatLength(_bpm)));
     }
 
-    public float GetBeatLength(float bpm){
+    private float GetBeatLength(float bpm){
         /*
         Gets the length of time between each actionable beat (i.e what subdivisions do we want actions to apply to)
         */
@@ -64,7 +64,7 @@ public class BeatManager : MonoBehaviour
         
     }
 
-    public void CheckForNextBeat(float c_beat){
+    private void CheckForNextBeat(float c_beat){
         /*
         Checks for the next beat, and activates the trigger function when the next beat beats
         */

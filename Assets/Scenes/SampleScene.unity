@@ -487,11 +487,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bpm: 138
-  _localOffset: -0.6
+  _localOffset: -0.17
   _globalOffset: 0
-  _buffer: 0.15
+  _buffer: 0.25
   _audioSource: {fileID: 2741787}
-  _subdivision: 0.5
+  _subdivision: 1
   _trigger:
     m_PersistentCalls:
       m_Calls:
@@ -623,6 +623,7 @@ MonoBehaviour:
   facing: {x: 0, y: 0, z: 0}
   currentGravity: 0
   _beatManager: {fileID: 1081457434}
+  _staminaManager: {fileID: 1670156107}
   playerBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0.49, y: 0.49, z: 0}
@@ -9627,3 +9628,67 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!1 &1670156105
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1670156108}
+  - component: {fileID: 1670156107}
+  - component: {fileID: 1670156106}
+  m_Layer: 0
+  m_Name: Stamina Bar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1670156106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670156105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fed610089b6d124f9d8b26ef4d990be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emptySprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  fullSprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+--- !u!114 &1670156107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670156105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e78f48e94049284c85e7744fa14067c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  staminaBar: {fileID: 1670156106}
+  maxStamina: 5
+  dashCost: 3
+  wallJumpCost: 0
+  onBeatGain: 1
+--- !u!4 &1670156108
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670156105}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.57, y: 7.16, z: -0.0012613141}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

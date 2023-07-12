@@ -6,13 +6,13 @@ public class StaminaManager : MonoBehaviour {
     
     public StaminaBar staminaBar;
     
-    public int currentStamina;
+    private int currentStamina=0;
     
     public int maxStamina;
     
-    public int onBeatStamina;
     public int dashCost;
     public int wallJumpCost;
+    public int onBeatGain;
     
     // Start is called before the first frame update
     void Start() {
@@ -22,14 +22,25 @@ public class StaminaManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(Input.GetKeyDown(KeyCode.Space)){
-            currentStamina += 1;
-            staminaBar.setValue(currentStamina);
+        // staminaBar.setValue(currentStamina);
+    }
+
+    public void addStamina(int value){
+        if (currentStamina < maxStamina){
+            currentStamina += value;
         }
-        if(Input.GetKeyDown(KeyCode.LeftAlt)){
-            currentStamina -= 1;
-            staminaBar.setValue(currentStamina);
+        staminaBar.setValue(currentStamina);
+    }
+
+    public void removeStamina(int value){
+        if (currentStamina > 0){
+            currentStamina -= value;
         }
+        staminaBar.setValue(currentStamina);
+    }
+
+    public int getStamina(){
+        return currentStamina;
     }
     
     
