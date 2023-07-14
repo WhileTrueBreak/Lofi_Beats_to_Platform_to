@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class StaminaManager : MonoBehaviour {
     
-    public StaminaBar staminaBar;
+    [SerializeField] public StaminaBar staminaBar;
     
     private int currentStamina=0;
     
-    public int maxStamina;
+    [SerializeField] public int maxStamina;
     
-    public int dashCost;
-    public int wallJumpCost;
-    public int onBeatGain;
+    [SerializeField] public int dashCost;
+    [SerializeField] public int wallJumpCost;
+    [SerializeField] public int onBeatGain;
+    [SerializeField] public int passiveDecayRate;
 
     private bool staminaFlag;
+    private int missedBeats;
     
     // Start is called before the first frame update
     void Start() {
@@ -49,9 +51,17 @@ public class StaminaManager : MonoBehaviour {
 
     public void passiveLoss(){
         if (!staminaFlag){
-            removeStamina(1);
-        }else{
+            missedBeats++;
             staminaFlag = false;
+        }else{
+            missedBeats = 0;
+            staminaFlag = false;
+        }
+
+        if (missedBeats >= passiveDecayRate){
+            removeStamina(1);
+            staminaFlag = false;
+            missedBeats = 0;
         }
     }
 }

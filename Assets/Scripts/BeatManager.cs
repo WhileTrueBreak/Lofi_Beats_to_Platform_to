@@ -13,12 +13,12 @@ public class BeatManager : MonoBehaviour
 
     [SerializeField] private AudioSource _audioSource;
     [SerializeField] public float _subdivision;
-    [SerializeField] private UnityEvent onBeatTrigger;
-    [SerializeField] private UnityEvent endBeatTrigger;
+    [SerializeField] private UnityEvent[] onBeatTriggers;
+    [SerializeField] private UnityEvent[] endBeatTriggers;
 
     private float _lastBeat = 0;
+    private bool endTriggerFlag;
     private float sampledTime;
-    private bool offBuffer;
 
     void Start()
     {
@@ -30,7 +30,6 @@ public class BeatManager : MonoBehaviour
     {
         GetSampledTime();
         CheckForNextBeat(sampledTime);
-        endOfBeat(sampledTime);
         return;
     }
 
@@ -65,24 +64,22 @@ public class BeatManager : MonoBehaviour
         return (sampledTime < Mathf.Round(sampledTime)+_buffer & sampledTime > Mathf.Round(sampledTime)-_buffer);        
     }
 
-    public void endOfBeat(float c_beat){
-        /*
-        Activates when the timing period for a beat ends
-        */
-        if (c_beat >= _lastBeat+_buffer && offBuffer){
-            offBuffer = false;
-            endBeatTrigger.Invoke();
-        }
-    }
-
     private void CheckForNextBeat(float c_beat){
         /*
         Checks for the next beat, and activates the trigger function when the next beat beats
         */
+        if (c_beat >= _lastBeat + _buffer && endTriggerFlag){
+            endTriggerFlag = false;
+            foreach (UnityEvent eventTrigger in endBeatTriggers){
+                eventTrigger.Invoke();
+            }
+        }
         if (Mathf.FloorToInt(c_beat) != _lastBeat){
-            offBuffer = true;
+            endTriggerFlag = true;
             _lastBeat = Mathf.FloorToInt(c_beat);
-            onBeatTrigger.Invoke();
+            foreach (UnityEvent eventTrigger in onBeatTriggers){
+                eventTrigger.Invoke();
+            }
         }
     }
 }

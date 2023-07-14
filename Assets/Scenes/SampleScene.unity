@@ -492,8 +492,8 @@ MonoBehaviour:
   _buffer: 0.25
   _audioSource: {fileID: 2741787}
   _subdivision: 1
-  onBeatTrigger:
-    m_PersistentCalls:
+  onBeatTriggers:
+  - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 122626804}
         m_TargetAssemblyTypeName: TestBeatResponse, Assembly-CSharp
@@ -507,8 +507,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  endBeatTrigger:
-    m_PersistentCalls:
+  endBeatTriggers:
+  - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1670156107}
         m_TargetAssemblyTypeName: StaminaManager, Assembly-CSharp
@@ -9692,6 +9692,7 @@ MonoBehaviour:
   dashCost: 3
   wallJumpCost: 0
   onBeatGain: 1
+  passiveDecayRate: 2
 --- !u!4 &1670156108
 Transform:
   m_ObjectHideFlags: 0

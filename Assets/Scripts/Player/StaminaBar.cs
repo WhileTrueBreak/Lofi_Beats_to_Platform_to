@@ -34,7 +34,6 @@ public class StaminaBar : MonoBehaviour {
             cell.transform.position = transform.position;
             cell.transform.parent = transform;
             cell.transform.position += Vector3.right * (i*emptySprite.bounds.size.x*1.1f);
-            Debug.Log(cell.transform.position);
         }
     }
 
