@@ -9,12 +9,14 @@ public class PlayerMovementV2 : MonoBehaviour {
     
     //other variables
     public float currentGravity;
+    private Animator animator;
     #endregion
     
     // Start is called before the first frame update
     void Start() {
         vel = new Vector3(0,0,0);
         currentGravity = gravity;
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -22,6 +24,7 @@ public class PlayerMovementV2 : MonoBehaviour {
         getInputs();
         checkCollisions();
         setFlags();
+        changeAnimations();
         calcMovement();
     }
     
@@ -29,6 +32,7 @@ public class PlayerMovementV2 : MonoBehaviour {
     [SerializeField] StaminaManager _staminaManager;
     private bool _isOnBeat;
 
+    #region inputs
     private bool inputLeft = false;
     private bool inputRight = false;
     private bool inputUp = false;
@@ -39,6 +43,7 @@ public class PlayerMovementV2 : MonoBehaviour {
     private float lastDashInput = -1f;
     private float lastMoveInput = -1f;
     private float lastStopInput = -1f;
+    #endregion
     
     void getInputs(){
         // get key input
@@ -250,6 +255,23 @@ public class PlayerMovementV2 : MonoBehaviour {
         if((collidedLeft && vel.x < 0) || (collidedRight && vel.x > 0) || (collidedDown && vel.y < 0) || (collidedUp && vel.y > 0)) {
             isDashing = false;
             lastDash = -1;
+        }
+    }
+
+    
+    private void changeAnimations(){
+        if (inputRight){
+            animator.SetBool("facing_right", true);
+            animator.SetBool("moving_right", true);
+        }else{
+            animator.SetBool("moving_right", false);
+        }
+
+        if (inputLeft){
+            animator.SetBool("facing_right", false);
+            animator.SetBool("moving_left", true);
+        }else{
+            animator.SetBool("moving_left", false);
         }
     }
     

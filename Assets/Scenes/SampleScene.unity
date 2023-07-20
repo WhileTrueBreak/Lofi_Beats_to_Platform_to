@@ -548,6 +548,7 @@ GameObject:
   - component: {fileID: 1112889300}
   - component: {fileID: 1112889299}
   - component: {fileID: 1112889301}
+  - component: {fileID: 1112889302}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -596,7 +597,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1987701378, guid: ac942e703ce2e7043a15478eff602bd1, type: 3}
+  m_Sprite: {fileID: 1174903007, guid: 7d056ec5b90d06340940953bbdf0203f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -615,8 +616,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1112889297}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 7, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -1.95, y: 6.95, z: 0}
+  m_LocalScale: {x: 1.4, y: 1.4, z: 0.9859155}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -641,7 +642,7 @@ MonoBehaviour:
   _staminaManager: {fileID: 1670156107}
   playerBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.49, y: 0.49, z: 0}
+    m_Extent: {x: 0.7, y: 0.7, z: 0}
   ground:
     serializedVersion: 2
     m_Bits: 64
@@ -669,6 +670,27 @@ MonoBehaviour:
   dashDuration: 0.3
   dashEndSpeed: 10
   grabFallSpeed: 5
+--- !u!95 &1112889302
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112889297}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e2baa68c0926d244499691085940b06c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1368007046
 GameObject:
   m_ObjectHideFlags: 0
