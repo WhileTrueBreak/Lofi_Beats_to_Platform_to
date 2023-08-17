@@ -1219,14 +1219,14 @@ MonoBehaviour:
   maxFallSpeed: 20
   jumpInputBuffer: 0.1
   coyoteBuffer: 0.1
-  jumpForce: 40
+  jumpForce: 30
   apexRange: 10
   apexGravity: 30
   wallJumpInputBuffer: 0.1
   wallJumpAngle: 30
-  wallJumpForce: 50
+  wallJumpForce: 40
   dashBuffer: 0.1
-  dashForce: 60
+  dashForce: 40
   dashDuration: 0.3
   dashEndSpeed: 10
   grabFallSpeed: 5
