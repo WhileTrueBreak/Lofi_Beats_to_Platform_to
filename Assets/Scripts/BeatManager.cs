@@ -6,13 +6,13 @@ using UnityEngine.Events;
 
 public class BeatManager : MonoBehaviour
 {
-    [SerializeField] public float _bpm;            // bullets per minute bangin game
-    [SerializeField] public float _localOffset;    // In the event the song doesnt start exactly on time
-    [SerializeField] public float _globalOffset;    // Used for when the user wants to adjust some timings
-    [SerializeField] public float _buffer;          // plus or minus on beat time
+    [SerializeField] private float _bpm;            // bullets per minute bangin game
+    [SerializeField] private float _localOffset;    // In the event the song doesnt start exactly on time
+    [SerializeField] private float _globalOffset;    // Used for when the user wants to adjust some timings
+    [SerializeField] private float _buffer;          // plus or minus on beat time
 
     [SerializeField] private AudioSource _audioSource;
-    [SerializeField] public float _subdivision;
+    [SerializeField] private float _subdivision;
     [SerializeField] private UnityEvent[] onBeatTriggers;
     [SerializeField] private UnityEvent[] endBeatTriggers;
 
@@ -81,5 +81,13 @@ public class BeatManager : MonoBehaviour
                 eventTrigger.Invoke();
             }
         }
+    }
+
+    public void changeSong(float bpm, float localOffset){
+        this._bpm = bpm;
+        this._localOffset = localOffset;
+    }
+    public void setSubdivision(float div){
+        this.subdivision = div;
     }
 }
