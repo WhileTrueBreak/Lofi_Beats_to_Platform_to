@@ -58,8 +58,8 @@ public class MusicManager : MonoBehaviour
     public void nextSong(){
         this.changeSong(current_id + 1);
     }
-
 }
+
 public class Song{
         private int songID;
         public int bpm;

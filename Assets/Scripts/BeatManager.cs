@@ -88,6 +88,6 @@ public class BeatManager : MonoBehaviour
         this._localOffset = localOffset;
     }
     public void setSubdivision(float div){
-        this.subdivision = div;
+        this._subdivision = div;
     }
 }

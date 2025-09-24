@@ -11,6 +11,11 @@ public class PlayerMovementV2 : MonoBehaviour {
     public float currentGravity;
     private Animator animator;
     #endregion
+
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     
     // Start is called before the first frame update
     void Start() {
@@ -39,6 +44,7 @@ public class PlayerMovementV2 : MonoBehaviour {
     private bool inputDown = false;
     private bool inputJump = false;
     private bool inputDash = false;
+    private bool inputGrab = false;
     private float lastJumpInput = -1f;
     private float lastDashInput = -1f;
     private float lastMoveInput = -1f;
@@ -53,13 +59,18 @@ public class PlayerMovementV2 : MonoBehaviour {
         inputDown = Input.GetKey("down");
         inputJump = Input.GetKeyDown("x");
         inputDash = Input.GetKeyDown("c");
+        inputGrab = Input.GetKey("z");
         
-        if(inputJump){
+        if (inputJump)
+        {
             lastJumpInput = Time.time;
             checkTiming();
-            if (_isOnBeat){
+            if (_isOnBeat)
+            {
                 _staminaManager.addStamina(_staminaManager.onBeatGain);
-            }else{
+            }
+            else
+            {
                 _staminaManager.removeStamina(_staminaManager.onBeatGain);
             }
         }
@@ -199,7 +210,7 @@ public class PlayerMovementV2 : MonoBehaviour {
         if(collidedLeft  && facing.x < 0) allowWallGrab = true;
         if(collidedRight && facing.x > 0) allowWallGrab = true;
         if(inputDown) allowWallGrab = false;
-        if(isDashing) allowWallGrab = false;
+        if (isDashing) allowWallGrab = false;
         if(!allowWallGrab) isWallGrabbing = false;
     }
     
@@ -322,20 +333,20 @@ public class PlayerMovementV2 : MonoBehaviour {
         calcWalk();
         calcAerialControl();
         calcJump();
-        calcWallGrab();
         calcWallJump();
         calcJumpAirTime();
         calcDash();
         calcDashTime();
         calcGravity();
         cancelVel();
+        calcWallGrab();
         calcNextPosition();
     }
     
     void calcWallGrab(){
         if(!allowWallGrab) return;
         // clamp max down speed to grab speed
-        vel.y = Mathf.Clamp(vel.y, -grabFallSpeed, Mathf.Infinity);
+        vel.y = (!inputGrab)?Mathf.Clamp(vel.y, -grabFallSpeed, Mathf.Infinity):0;
         isWallGrabbing = true;
     }
     
